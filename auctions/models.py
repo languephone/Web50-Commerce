@@ -27,7 +27,7 @@ class Bids(models.Model):
     date_time = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"listing {self.listing}: £{self.bid_amount}"
+        return f"Bid: £{self.bid_amount} {self.bidder.username}"
 
 
 class Comments(models.Model):

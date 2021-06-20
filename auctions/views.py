@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django import forms
 
-from .models import User, Listings
+from .models import User, Listings, Bids, Comments, Watchlist
 
 # Create new form based on Listings model (from Django docs)
 class NewListingForm(forms.ModelForm):
@@ -89,4 +89,7 @@ def new_listing(request):
 
 def listing(request, listing_id):
     listing = Listings.objects.get(pk=int(listing_id))
-    return render(request, "auctions/listing.html")
+    bids = Bids.objects.all().order_by('date_time')
+    return render(request, "auctions/listing.html", {
+        "listing":listing, "bids":bids
+    })

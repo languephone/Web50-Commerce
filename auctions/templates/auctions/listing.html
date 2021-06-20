@@ -2,5 +2,7 @@
 
 {% block body %}
     <h2>{{ listing.title }}</h2>
-    <p><a href="index.html">back to main page</a></p>
+    <p><img src="{{ listing.image }}" height="100"></p>
+    <p>Top Bid: £{{ bids.0.bid_amount }}</p>
+    <p><a href="/">back to main page</a></p>
 {% endblock %}
