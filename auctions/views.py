@@ -13,6 +13,11 @@ class NewListingForm(forms.ModelForm):
         model = Listings
         fields = ['title', 'description', 'starting_bid', 'image', 'category']
 
+class NewBidForm(forms.ModelForm):
+    class Meta:
+        model = Bids
+        fields = ['bid_amount']
+
 def index(request):
     return render(request, "auctions/index.html", {
         "listings": Listings.objects.all()
@@ -91,5 +96,22 @@ def listing(request, listing_id):
     listing = Listings.objects.get(pk=int(listing_id))
     bids = Bids.objects.all().order_by('date_time')
     return render(request, "auctions/listing.html", {
-        "listing":listing, "bids":bids
+        "listing": listing, "bids": bids
     })
+
+
+def bid(request):
+    if request.method == "POST":
+        bid = NewBidForm(request.POST)
+        new_bid = bid.save(commit=False)
+        new_bid.bidder = request.user
+        new_bid.listing = Listings.objects.get(pk=int(request.POST["listing"]))
+        new_bid.save()
+        return HttpResponseRedirect(reverse("index"))
+
+    # Below code runs when method is "GET"
+    listing = Listings.objects.get(pk=int(request.GET["listing"]))
+    return render(request, "auctions/bid.html", {
+        "listing": listing, "form": NewBidForm()
+    })
+
