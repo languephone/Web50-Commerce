@@ -31,7 +31,10 @@ class Bids(models.Model):
 
 
 class Comments(models.Model):
-    pass
+    listing = models.ForeignKey(Listings, on_delete=models.CASCADE,related_name="listing_comments")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_comments")
+    comment = models.TextField(max_length=1000)
+    date_added = models.DateTimeField(auto_now_add=True)
 
 
 class Watchlist(models.Model):
