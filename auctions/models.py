@@ -13,6 +13,7 @@ class Listings(models.Model):
     image = models.URLField(blank=True)
     category = models.CharField(max_length=64)
     seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name="seller_listings")
+    creation_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.title}: £{self.starting_bid}"

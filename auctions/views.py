@@ -7,14 +7,16 @@ from django import forms
 
 from .models import User, Listings
 
-# Create new form 
+# Create new form based on Listings model (from Django docs)
 class NewListingForm(forms.ModelForm):
     class Meta:
         model = Listings
         fields = ['title', 'description', 'starting_bid', 'image', 'category']
 
 def index(request):
-    return render(request, "auctions/index.html")
+    return render(request, "auctions/index.html", {
+        "listings": Listings.objects.all()
+    })
 
 
 def login_view(request):
@@ -71,6 +73,8 @@ def register(request):
 
 def new_listing(request):
     if request.method == "POST":
+        # Use Django's ModelForm class to process form
+        # Create instance of model, but don't commit until seller foreign key added 
         listing = NewListingForm(request.POST)
         new_listing = listing.save(commit=False)
         new_listing.seller = request.user

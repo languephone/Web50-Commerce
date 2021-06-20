@@ -1,7 +1,13 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Active Listings</h2>
-
-    TODO
+    <h2>Active Listings:</h2>
+    {% for listing in listings %}
+        <div>
+            <h4><a href="#">{{ listing.title }}</a>: {{ listing.starting_bid }}</h4>
+            <p>{{ listing.description }}</p>
+            <p>Created: {{ listing.creation_date }}<p>
+            <img src="{{ listing.image }}" height="100x">
+        </div>
+    {% endfor %}
 {% endblock %}
