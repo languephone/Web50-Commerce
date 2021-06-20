@@ -6,7 +6,7 @@ class User(AbstractUser):
     pass
 
 
-class Listings(models.Model):
+class Listing(models.Model):
     title = models.CharField(max_length=64)
     description = models.TextField(max_length=1000)
     starting_bid = models.DecimalField(decimal_places=2, max_digits=9)
@@ -20,8 +20,8 @@ class Listings(models.Model):
         return f"{self.title}: £{self.starting_bid} (Active:{self.active})"
 
 
-class Bids(models.Model):
-    listing = models.ForeignKey(Listings, on_delete=models.CASCADE, related_name="bid_history")
+class Bid(models.Model):
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="bid_history")
     bidder = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bidder_bids")
     bid_amount = models.DecimalField(decimal_places=2, max_digits=9)
     date_time = models.DateTimeField(auto_now=True)
@@ -30,8 +30,8 @@ class Bids(models.Model):
         return f"Bid: £{self.bid_amount} {self.bidder.username}"
 
 
-class Comments(models.Model):
-    listing = models.ForeignKey(Listings, on_delete=models.CASCADE,related_name="listing_comments")
+class Comment(models.Model):
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE,related_name="listing_comments")
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_comments")
     comment = models.TextField(max_length=1000)
     date_added = models.DateTimeField(auto_now_add=True)
@@ -39,5 +39,5 @@ class Comments(models.Model):
 
 class Watchlist(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="users_watching")
-    listing = models.ManyToManyField(Listings, blank=True, related_name="on_watchlists")
+    listing = models.ManyToManyField(Listing, blank=True, related_name="on_watchlists")
     date_added = models.DateTimeField(auto_now_add=True)
