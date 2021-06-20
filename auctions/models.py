@@ -10,7 +10,7 @@ class Listings(models.Model):
     title = models.CharField(max_length=64)
     description = models.TextField(max_length=1000)
     starting_bid = models.DecimalField(decimal_places=2, max_digits=9)
-    image = models.URLField()
+    image = models.URLField(blank=True)
     category = models.CharField(max_length=64)
     seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name="seller_listings")
 
