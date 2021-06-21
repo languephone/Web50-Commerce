@@ -1,3 +1,13 @@
 body {
     padding: 10px;
 }
+
+.listing {
+    padding: 10px;
+    margin-bottom: 5px;
+    border-width: 1px;
+    border-color: gainsboro;
+    border-style: solid;
+    border-radius: 10px;
+    background-color: whitesmoke;
+}
