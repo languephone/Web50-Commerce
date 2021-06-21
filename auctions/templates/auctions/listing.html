@@ -3,7 +3,7 @@
 {% block body %}
     <h2>{{ listing.title }}</h2>
     <p><img src="{{ listing.image }}" height="100"></p>
-    <p>Top Bid: £{{ bids.0.bid_amount }}</p>
+    <p>Top Bid: £{{ top_bid.bid_amount__max }}</p>
     <p><a href="/">back to main page</a></p>
     <form action="{% url 'bid' %}">
     	<button type="submit" value="{{ listing.id }}" name="listing">Bid</button>
