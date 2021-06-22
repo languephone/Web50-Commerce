@@ -16,6 +16,12 @@ class Listing(models.Model):
     creation_date = models.DateTimeField(auto_now_add=True)
     active = models.BooleanField(default=True)
 
+    def get_highest_bid(self):
+        """Return current highest bid for listing by referencing Bid table."""
+        top_bid = self.bid_history.all().aggregate(models.Max('bid_amount'))
+        return top_bid
+
+
     def __str__(self):
         return f"{self.title}: £{self.starting_bid} (Active:{self.active})"
 

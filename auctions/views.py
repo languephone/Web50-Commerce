@@ -1,6 +1,5 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.db.models import Max
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
@@ -96,7 +95,7 @@ def new_listing(request):
 def listing(request, listing_id):
     listing = Listing.objects.get(pk=int(listing_id))
     # Assume latest bid is the highest, use template to choose bid[0]
-    top_bid = listing.bid_history.all().aggregate(Max('bid_amount'))
+    top_bid = listing.get_highest_bid()
     return render(request, "auctions/listing.html", {
         "listing": listing, "top_bid": top_bid
     })
@@ -113,7 +112,7 @@ def bid(request):
 
     # Below code runs when method is "GET"
     listing = Listing.objects.get(pk=int(request.GET["listing"]))
-    top_bid = listing.bid_history.all().aggregate(Max('bid_amount'))
+    top_bid = listing.get_highest_bid()
     return render(request, "auctions/bid.html", {
         "listing": listing, "top_bid": top_bid, "form": NewBidForm()
     })
