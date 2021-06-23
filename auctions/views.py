@@ -84,6 +84,9 @@ def new_listing(request):
         new_listing = listing.save(commit=False)
         new_listing.seller = request.user
         new_listing.save()
+        # Create initial bid for listing, equal to starting price
+        bid = Bid(listing=new_listing, bidder=request.user, bid_amount=new_listing.starting_bid)
+        bid.save()
         return HttpResponseRedirect(reverse("index"))
 
     # Below code runs when method is "GET"

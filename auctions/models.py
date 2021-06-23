@@ -21,7 +21,6 @@ class Listing(models.Model):
         top_bid = self.bid_history.all().aggregate(models.Max('bid_amount'))
         return top_bid
 
-
     def __str__(self):
         return f"{self.title}: £{self.starting_bid} (Active:{self.active})"
 
