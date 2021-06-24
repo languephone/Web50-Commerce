@@ -120,3 +120,13 @@ def bid(request):
         "listing": listing, "top_bid": top_bid, "form": NewBidForm()
     })
 
+def categories(request):
+    return render(request, "auctions/categories.html", {
+        "categories": Listing.objects.values_list('category').distinct()
+    })
+
+def category(request, category):
+    listings = Listing.objects.filter(category=category)
+    return render(request, "auctions/index.html", {
+        "listings": listings
+    })
