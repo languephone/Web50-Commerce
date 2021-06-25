@@ -111,7 +111,6 @@ def listing(request, listing_id):
 
 
 def bid(request):
-    print(request)
     if request.method == "POST":
         bid = NewBidForm(request.POST)
         new_bid = bid.save(commit=False)
@@ -142,7 +141,6 @@ def category(request, category):
 
 def comment(request):
     comment = NewCommentForm(request.POST)
-    print(comment)
     new_comment = comment.save(commit=False)
     new_comment.user = request.user
     new_comment.listing = Listing.objects.get(pk=int(request.POST["listing"]))
