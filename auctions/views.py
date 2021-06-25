@@ -19,8 +19,9 @@ class NewBidForm(forms.ModelForm):
         fields = ['bid_amount']
 
 def index(request):
+    listings = Listing.objects.filter(active=True)
     return render(request, "auctions/index.html", {
-        "listings": Listing.objects.all()
+        "listings": listings
     })
 
 
@@ -126,7 +127,7 @@ def categories(request):
     })
 
 def category(request, category):
-    listings = Listing.objects.filter(category=category)
+    listings = Listing.objects.filter(category=category).filter(active=True)
     return render(request, "auctions/index.html", {
         "listings": listings
     })
