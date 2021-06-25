@@ -8,7 +8,9 @@
             <p>{{ listing.description }}</p>
             <p>Created: {{ listing.creation_date }}<p>
             <p>Listed by: {{ listing.seller.username }}</p>
-            <img src="{{ listing.image }}" height="100">
+            <a href="{{ listing.id }}">
+                <img src="{{ listing.image }}" height="100">
+            </a>
         </div>
     {% endfor %}
 {% endblock %}
