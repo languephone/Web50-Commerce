@@ -18,6 +18,11 @@ class NewBidForm(forms.ModelForm):
         model = Bid
         fields = ['bid_amount']
 
+class NewCommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['comment']
+
 def index(request):
     listings = Listing.objects.filter(active=True)
     return render(request, "auctions/index.html", {
@@ -98,14 +103,15 @@ def new_listing(request):
 
 def listing(request, listing_id):
     listing = Listing.objects.get(pk=int(listing_id))
-    # Assume latest bid is the highest, use template to choose bid[0]
     top_bid = listing.get_highest_bid()
+    form = NewCommentForm()
     return render(request, "auctions/listing.html", {
-        "listing": listing, "top_bid": top_bid
+        "listing": listing, "top_bid": top_bid, "form": form
     })
 
 
 def bid(request):
+    print(request)
     if request.method == "POST":
         bid = NewBidForm(request.POST)
         new_bid = bid.save(commit=False)
@@ -126,8 +132,19 @@ def categories(request):
         "categories": Listing.objects.values_list('category').distinct()
     })
 
+
 def category(request, category):
     listings = Listing.objects.filter(category=category).filter(active=True)
     return render(request, "auctions/index.html", {
         "listings": listings
     })
+
+
+def comment(request):
+    comment = NewCommentForm(request.POST)
+    print(comment)
+    new_comment = comment.save(commit=False)
+    new_comment.user = request.user
+    new_comment.listing = Listing.objects.get(pk=int(request.POST["listing"]))
+    new_comment.save()
+    return HttpResponseRedirect(reverse("listing", args=(new_comment.listing.id,)))
