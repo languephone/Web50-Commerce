@@ -112,6 +112,7 @@ def listing(request, listing_id):
 
 def bid(request):
     if request.method == "POST":
+        # Create bid object but don't commit, then check if it's higher than the existing high bid.
         bid = NewBidForm(request.POST)
         new_bid = bid.save(commit=False)
         new_bid.bidder = request.user
@@ -119,8 +120,9 @@ def bid(request):
         current_high_bid = new_bid.listing.get_highest_bid()['bid_amount__max']
         if new_bid.bid_amount <= current_high_bid:
             return HttpResponse("Error: Your bid must be higher than the existing bid.")
-        new_bid.save()
-        return HttpResponseRedirect(reverse("index"))
+        else:
+            new_bid.save()
+            return HttpResponseRedirect(reverse("index"))
 
     # Below code runs when method is "GET"
     listing = Listing.objects.get(pk=int(request.GET["listing"]))
