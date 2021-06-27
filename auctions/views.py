@@ -110,7 +110,7 @@ def listing(request, listing_id):
     })
 
 
-def bid(request):
+def bid(request, listing_id):
     if request.method == "POST":
         # Create bid object but don't commit, then check if it's higher than the existing high bid.
         bid = NewBidForm(request.POST)
@@ -151,3 +151,13 @@ def comment(request):
     new_comment.listing = Listing.objects.get(pk=int(request.POST["listing"]))
     new_comment.save()
     return HttpResponseRedirect(reverse("listing", args=(new_comment.listing.id,)))
+
+
+def watchlist(request):
+    user = request.user
+    print(request)
+    print(request.POST)
+    listing = Listing.objects.get(pk=int(request.POST["listing"]))
+    watchlist = Watchlist(user=user, listing=listing)
+    watchlist.save()
+    return HttpResponseRedirect(reverse("listing", args=(listing.id,)))

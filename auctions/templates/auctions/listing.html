@@ -16,10 +16,15 @@
         {% for comment in listing.listing_comments.all %}
             <p>{{ comment.comment }} ({{ comment.user }}: {{ comment.date_added }})</p>
         {% endfor %}
+        
         <hr>
 
-        <form action="{% url 'bid' %}">
+        <form action="{% url 'bid' listing.id %}">
         	<button type="submit" value="{{ listing.id }}" name="listing">Bid</button>
+        </form>
+        <form action="{% url 'watchlist' %}" method="post">
+            {% csrf_token %}
+            <button type="submit" value="{{ listing.id }}" name="listing">Add to Watchlist</button>
         </form>
         <form action ="{% url 'comment' %}" method="post">
             {% csrf_token %}
