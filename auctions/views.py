@@ -150,11 +150,15 @@ def comment(request, listing_id):
     return HttpResponseRedirect(reverse("listing", args=(listing_id,)))
 
 
-def watchlist(request):
+def watchlist(request, listing_id):
+    # Create new watchlist for user if one doesn't already exist:
     user = request.user
-    print(request)
-    print(request.POST)
-    listing = Listing.objects.get(pk=int(request.POST["listing"]))
-    watchlist = Watchlist(user=user, listing=listing)
-    watchlist.save()
+    listing = Listing.objects.get(pk=int(listing_id))
+    if Watchlist.objects.filter(user=int(user.id)).exists():
+        watchlist = Watchlist.objects.get(user=int(user.id))
+        watchlist.listing.add(listing_id)
+    else:
+        watchlist = Watchlist(user=user)
+        watchlist.save()
+        watchlist.listing.add(listing_id)        
     return HttpResponseRedirect(reverse("listing", args=(listing.id,)))
