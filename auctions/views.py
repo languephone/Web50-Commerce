@@ -104,32 +104,29 @@ def new_listing(request):
 def listing(request, listing_id):
     listing = Listing.objects.get(pk=int(listing_id))
     top_bid = listing.get_highest_bid()
-    form = NewCommentForm()
+    bid_form = NewBidForm()
+    comment_form = NewCommentForm()
     return render(request, "auctions/listing.html", {
-        "listing": listing, "top_bid": top_bid, "form": form
+        "listing": listing, "top_bid": top_bid, "bid_form": bid_form,
+        "comment_form": comment_form
     })
 
 
 def bid(request, listing_id):
-    if request.method == "POST":
-        # Create bid object but don't commit, then check if it's higher than the existing high bid.
-        bid = NewBidForm(request.POST)
-        new_bid = bid.save(commit=False)
-        new_bid.bidder = request.user
-        new_bid.listing = Listing.objects.get(pk=int(request.POST["listing"]))
-        current_high_bid = new_bid.listing.get_highest_bid()['bid_amount__max']
-        if new_bid.bid_amount <= current_high_bid:
-            return HttpResponse("Error: Your bid must be higher than the existing bid.")
-        else:
-            new_bid.save()
-            return HttpResponseRedirect(reverse("index"))
+    if request.method == "GET":
+        return HttpResponse("Error: Please bid via the form.")
+    # Create bid object but don't commit, then check if it's higher than the existing high bid.
+    bid = NewBidForm(request.POST)
+    new_bid = bid.save(commit=False)
+    new_bid.bidder = request.user
+    new_bid.listing = Listing.objects.get(pk=int(listing_id))
+    current_high_bid = new_bid.listing.get_highest_bid()['bid_amount__max']
+    if new_bid.bid_amount <= current_high_bid:
+        return HttpResponse("Error: Your bid must be higher than the existing bid.")
+    else:
+        new_bid.save()
+        return HttpResponseRedirect(reverse("index"))
 
-    # Below code runs when method is "GET"
-    listing = Listing.objects.get(pk=int(request.GET["listing"]))
-    top_bid = listing.get_highest_bid()
-    return render(request, "auctions/bid.html", {
-        "listing": listing, "top_bid": top_bid, "form": NewBidForm()
-    })
 
 def categories(request):
     return render(request, "auctions/categories.html", {
@@ -144,13 +141,13 @@ def category(request, category):
     })
 
 
-def comment(request):
+def comment(request, listing_id):
     comment = NewCommentForm(request.POST)
     new_comment = comment.save(commit=False)
     new_comment.user = request.user
-    new_comment.listing = Listing.objects.get(pk=int(request.POST["listing"]))
+    new_comment.listing = Listing.objects.get(pk=int(listing_id))
     new_comment.save()
-    return HttpResponseRedirect(reverse("listing", args=(new_comment.listing.id,)))
+    return HttpResponseRedirect(reverse("listing", args=(listing_id,)))
 
 
 def watchlist(request):

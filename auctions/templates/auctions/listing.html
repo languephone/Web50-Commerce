@@ -18,19 +18,20 @@
         {% endfor %}
         
         <hr>
-
-        <form action="{% url 'bid' listing.id %}">
-        	<button type="submit" value="{{ listing.id }}" name="listing">Bid</button>
+       <!-- Below are the forms for bidding, commenting and adding to a watchlist -->
+        <form action="{% url 'bid' listing.id %}" method="post">
+            {% csrf_token %}
+            {{ bid_form }}
+        	<input type="submit">
+        </form>
+        <form action ="{% url 'comment' listing.id %}" method="post">
+            {% csrf_token %}
+            {{ comment_form }}
+            <input type="submit">
         </form>
         <form action="{% url 'watchlist' %}" method="post">
             {% csrf_token %}
             <button type="submit" value="{{ listing.id }}" name="listing">Add to Watchlist</button>
-        </form>
-        <form action ="{% url 'comment' %}" method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <input type="hidden" name="listing" value="{{ listing.id }}">
-            <input type="submit">
         </form>
     </div>
 {% endblock %}
