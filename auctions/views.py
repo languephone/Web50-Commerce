@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
@@ -81,7 +82,7 @@ def register(request):
     else:
         return render(request, "auctions/register.html")
 
-
+@login_required(login_url='/login')
 def new_listing(request):
     if request.method == "POST":
         # Use Django's ModelForm class to process form
@@ -111,7 +112,7 @@ def listing(request, listing_id):
         "comment_form": comment_form
     })
 
-
+@login_required(login_url='/login')
 def bid(request, listing_id):
     if request.method == "GET":
         return HttpResponse("Error: Please bid via the form.")
@@ -149,16 +150,19 @@ def comment(request, listing_id):
     new_comment.save()
     return HttpResponseRedirect(reverse("listing", args=(listing_id,)))
 
-
+@login_required(login_url='/login')
 def watchlist(request, listing_id):
-    # Create new watchlist for user if one doesn't already exist:
-    user = request.user
-    listing = Listing.objects.get(pk=int(listing_id))
-    if Watchlist.objects.filter(user=int(user.id)).exists():
-        watchlist = Watchlist.objects.get(user=int(user.id))
-        watchlist.listing.add(listing_id)
-    else:
-        watchlist = Watchlist(user=user)
-        watchlist.save()
-        watchlist.listing.add(listing_id)        
-    return HttpResponseRedirect(reverse("listing", args=(listing.id,)))
+    if request.method == "POST":
+        # Create new watchlist for user if one doesn't already exist:
+        user = request.user
+        listing = Listing.objects.get(pk=int(listing_id))
+        if Watchlist.objects.filter(user=int(user.id)).exists():
+            watchlist = Watchlist.objects.get(user=int(user.id))
+            watchlist.listing.add(listing_id)
+        else:
+            watchlist = Watchlist(user=user)
+            watchlist.save()
+            watchlist.listing.add(listing_id)        
+        return HttpResponseRedirect(reverse("listing", args=(listing.id,)))
+
+    # TODO: create view for get method showing items in watchlist.
