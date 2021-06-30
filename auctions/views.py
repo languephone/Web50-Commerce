@@ -190,9 +190,10 @@ def close_auction(request, listing_id):
         return HttpResponse("You must be the seller to close an auction.")  
     
     if request.method == "POST":
+        high_bidder = listing.get_highest_bidder()
         listing.active = False
+        listing.winner = high_bidder
         listing.save()
-        print(f"listing: {listing.active}")
         return HttpResponseRedirect(reverse("listing", args=(listing.id,)))
 
     # Below code runs when method is "GET"

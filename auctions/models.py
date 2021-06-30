@@ -25,11 +25,22 @@ class Listing(models.Model):
     seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name="seller_listings")
     creation_date = models.DateTimeField(auto_now_add=True)
     active = models.BooleanField(default=True)
+    winner = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
 
     def get_highest_bid(self):
         """Return current highest bid for listing by referencing Bid table."""
         top_bid = self.bid_history.all().aggregate(models.Max('bid_amount'))
         return top_bid
+
+    def get_highest_bidder(self):
+        """Return bid object for highest bid by referencing Bid table."""
+
+        # Queries the most recent bid, therefore requires logic in the bidding
+        # route which only allows bids greater than the existing top bid 
+        high_bid = self.bid_history.all().order_by('bid_amount').reverse()[0]
+        high_bidder = high_bid.bidder
+        return high_bidder
+
 
     def toggle_watchlist(self, user):
         """Add an item to a watchlist, or remove it if it's already there."""
