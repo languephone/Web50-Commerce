@@ -45,5 +45,11 @@
                 {% endif %} 
             </button>
         </form>
+        {% if can_end %}
+            <form action="{% url 'close_auction' listing.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary">Close Auction</button>
+            </form>
+        {% endif %} 
     </div>
 {% endblock %}

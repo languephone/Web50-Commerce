@@ -113,11 +113,13 @@ def listing(request, listing_id):
         watchlist = True
     else:
         watchlist = False
+    # Check whether listing is from current user, to allow for ending of auction
+    can_end = listing.seller == request.user
     bid_form = NewBidForm()
     comment_form = NewCommentForm()
     return render(request, "auctions/listing.html", {
         "listing": listing, "top_bid": top_bid, "watchlist": watchlist,
-        "bid_form": bid_form, "comment_form": comment_form
+        "can_end": can_end, "bid_form": bid_form, "comment_form": comment_form
     })
 
 
@@ -176,3 +178,22 @@ def watchlist(request):
     return render(request, "auctions/index.html", {
         "listings": listings
     })
+
+
+@login_required(login_url='/login')
+def close_auction(request, listing_id):
+    # Check if request coming from user who listed the item
+    user = request.user
+    listing = Listing.objects.get(pk=int(listing_id))
+    print(f"user: {user}, listing: {listing.seller}")
+    if user != listing.seller:
+        return HttpResponse("You must be the seller to close an auction.")  
+    
+    if request.method == "POST":
+        listing.active = False
+        listing.save()
+        print(f"listing: {listing.active}")
+        return HttpResponseRedirect(reverse("listing", args=(listing.id,)))
+
+    # Below code runs when method is "GET"
+    return HttpResponse("This page is not accessible.")
