@@ -27,17 +27,17 @@
         <form action="{% url 'bid' listing.id %}" method="post">
             {% csrf_token %}
             {{ bid_form }}
-        	<input type="submit">
+        	<input type="submit" class="btn btn-primary">
         </form>
         <form action ="{% url 'comment' listing.id %}" method="post">
             {% csrf_token %}
             {{ comment_form }}
-            <input type="submit">
+            <input type="submit" class="btn btn-primary">
         </form>
         <form action="{% url 'watchlist' %}" method="post">
             {% csrf_token %}
             <input type="hidden" value="{{ listing.id }}" name="listing_id">
-            <button type="submit">
+            <button type="submit" class="btn btn-primary">
                 {% if watchlist %}
                     Remove from Watchlist
                 {% else %}
