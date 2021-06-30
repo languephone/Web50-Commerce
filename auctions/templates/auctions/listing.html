@@ -2,7 +2,12 @@
 
 {% block body %}
     <div class="listing">    
-        <h2>{{ listing.title }}</h2>
+        <h2>
+            {{ listing.title }}
+            {% if watchlist %}
+            <span class="badge badge-secondary">Watchlist</span>
+            {% endif %}
+        </h2>
         <p>{{ listing.description }}</p>
         <hr>
         <p><img src="{{ listing.image }}" height="150"></p>
@@ -32,7 +37,13 @@
         <form action="{% url 'watchlist' %}" method="post">
             {% csrf_token %}
             <input type="hidden" value="{{ listing.id }}" name="listing_id">
-            <button type="submit">Add to Watchlist</button>
+            <button type="submit">
+                {% if watchlist %}
+                    Remove from Watchlist
+                {% else %}
+                    Add to Watchlist
+                {% endif %} 
+            </button>
         </form>
     </div>
 {% endblock %}

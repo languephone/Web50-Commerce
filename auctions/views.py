@@ -106,11 +106,16 @@ def new_listing(request):
 def listing(request, listing_id):
     listing = Listing.objects.get(pk=int(listing_id))
     top_bid = listing.get_highest_bid()
+    # Check if listing in user's watchlist to toggle badge & removal button
+    if listing in request.user.get_watchlist():
+        watchlist = True
+    else:
+        watchlist = False
     bid_form = NewBidForm()
     comment_form = NewCommentForm()
     return render(request, "auctions/listing.html", {
-        "listing": listing, "top_bid": top_bid, "bid_form": bid_form,
-        "comment_form": comment_form
+        "listing": listing, "top_bid": top_bid, "watchlist": watchlist,
+        "bid_form": bid_form, "comment_form": comment_form
     })
 
 
