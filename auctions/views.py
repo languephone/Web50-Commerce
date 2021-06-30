@@ -165,7 +165,6 @@ def watchlist(request):
         return HttpResponseRedirect(reverse("listing", args=(listing.id,)))
 
     # Below code runs when method is "GET"
-    print("running get method")
     listings = user.get_watchlist()
     return render(request, "auctions/index.html", {
         "listings": listings

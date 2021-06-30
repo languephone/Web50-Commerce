@@ -8,13 +8,9 @@ class User(AbstractUser):
         """Return a user's watchlist, if it exists."""
         
         # Check if watchlist exists
-        print("running method")
         if Watchlist.objects.filter(user=self).exists():
-            print("exists")
             watchlist = Watchlist.objects.get(user=self)
-            print("watchlist object created")
             listings = watchlist.listing.all()
-            print(listings)
             return listings
         else:
             return None
@@ -76,8 +72,6 @@ class Watchlist(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_watchlist")
     listing = models.ManyToManyField(Listing, blank=True, related_name="on_watchlists")
     date_added = models.DateTimeField(auto_now_add=True)
-
-
 
     def __str__(self):
         return f"{self.user.username}'s watchlist"
