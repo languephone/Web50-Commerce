@@ -107,7 +107,9 @@ def listing(request, listing_id):
     listing = Listing.objects.get(pk=int(listing_id))
     top_bid = listing.get_highest_bid()
     # Check if listing in user's watchlist to toggle badge & removal button
-    if listing in request.user.get_watchlist():
+    watchlist = request.user.get_watchlist() 
+    # Need to check watchlist exists, otherwise will give error
+    if watchlist and listing in watchlist:
         watchlist = True
     else:
         watchlist = False
