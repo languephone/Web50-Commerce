@@ -3,7 +3,21 @@ from django.db import models
 
 
 class User(AbstractUser):
-    pass
+    
+    def get_watchlist(self):
+        """Return a user's watchlist, if it exists."""
+        
+        # Check if watchlist exists
+        print("running method")
+        if Watchlist.objects.filter(user=self).exists():
+            print("exists")
+            watchlist = Watchlist.objects.get(user=self)
+            print("watchlist object created")
+            listings = watchlist.listing.all()
+            print(listings)
+            return listings
+        else:
+            return None
 
 
 class Listing(models.Model):
@@ -21,6 +35,22 @@ class Listing(models.Model):
         top_bid = self.bid_history.all().aggregate(models.Max('bid_amount'))
         return top_bid
 
+    def toggle_watchlist(self, user):
+        """Add an item to a watchlist, or remove it if it's already there."""
+        
+        # Check if watchlist exists, then add/remove
+        if Watchlist.objects.filter(user=user).exists():
+            watchlist = Watchlist.objects.get(user=user)
+            if self in watchlist.listing.all():
+                watchlist.listing.remove(self)
+            else:
+                watchlist.listing.add(self)
+        # If watchlist doesn't exist, create new watchlist then add listing
+        else:
+            watchlist = Watchlist(user=user)
+            watchlist.save()
+            watchlist.listing.add(self)       
+    
     def __str__(self):
         return f"{self.title}: £{self.starting_bid} (Active:{self.active})"
 
@@ -43,9 +73,11 @@ class Comment(models.Model):
 
 
 class Watchlist(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="users_watching")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_watchlist")
     listing = models.ManyToManyField(Listing, blank=True, related_name="on_watchlists")
     date_added = models.DateTimeField(auto_now_add=True)
+
+
 
     def __str__(self):
         return f"{self.user.username}'s watchlist"

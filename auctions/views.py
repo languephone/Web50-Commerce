@@ -82,6 +82,7 @@ def register(request):
     else:
         return render(request, "auctions/register.html")
 
+
 @login_required(login_url='/login')
 def new_listing(request):
     if request.method == "POST":
@@ -111,6 +112,7 @@ def listing(request, listing_id):
         "listing": listing, "top_bid": top_bid, "bid_form": bid_form,
         "comment_form": comment_form
     })
+
 
 @login_required(login_url='/login')
 def bid(request, listing_id):
@@ -142,6 +144,7 @@ def category(request, category):
     })
 
 
+@login_required(login_url='/login')
 def comment(request, listing_id):
     comment = NewCommentForm(request.POST)
     new_comment = comment.save(commit=False)
@@ -150,19 +153,20 @@ def comment(request, listing_id):
     new_comment.save()
     return HttpResponseRedirect(reverse("listing", args=(listing_id,)))
 
+
 @login_required(login_url='/login')
-def watchlist(request, listing_id):
+def watchlist(request):
+    user = request.user
     if request.method == "POST":
+        listing_id = request.POST["listing_id"]
         # Create new watchlist for user if one doesn't already exist:
-        user = request.user
         listing = Listing.objects.get(pk=int(listing_id))
-        if Watchlist.objects.filter(user=int(user.id)).exists():
-            watchlist = Watchlist.objects.get(user=int(user.id))
-            watchlist.listing.add(listing_id)
-        else:
-            watchlist = Watchlist(user=user)
-            watchlist.save()
-            watchlist.listing.add(listing_id)        
+        listing.toggle_watchlist(user) 
         return HttpResponseRedirect(reverse("listing", args=(listing.id,)))
 
-    # TODO: create view for get method showing items in watchlist.
+    # Below code runs when method is "GET"
+    print("running get method")
+    listings = user.get_watchlist()
+    return render(request, "auctions/index.html", {
+        "listings": listings
+    })

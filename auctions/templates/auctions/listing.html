@@ -29,9 +29,10 @@
             {{ comment_form }}
             <input type="submit">
         </form>
-        <form action="{% url 'watchlist' listing.id %}" method="post">
+        <form action="{% url 'watchlist' %}" method="post">
             {% csrf_token %}
-            <button type="submit" value="{{ listing.id }}" name="listing">Add to Watchlist</button>
+            <input type="hidden" value="{{ listing.id }}" name="listing_id">
+            <button type="submit">Add to Watchlist</button>
         </form>
     </div>
 {% endblock %}
