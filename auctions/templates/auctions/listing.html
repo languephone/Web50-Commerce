@@ -13,7 +13,7 @@
         </h2>
         <p>{{ listing.description }}</p>
         <hr>
-        <p><img src="{{ listing.image }}" height="150"></p>
+        <p><img src="{{ listing.image }}" alt="A picture of {{ listing.title }}" height="150"></p>
         <h3>Top Bid: £{{ top_bid.bid_amount__max|floatformat:2 }}</h3>
         <p>Listed by: {{ listing.seller }}</p>
         <p>Listed on: {{ listing.creation_date }}</p>

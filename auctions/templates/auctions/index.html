@@ -14,7 +14,7 @@
             <p>Created: {{ listing.creation_date }}<p>
             <p>Listed by: {{ listing.seller.username }}</p>
             <a href="{{ listing.id }}">
-                <img src="{{ listing.image }}" height="100">
+                <img src="{{ listing.image }}" alt="A picture of {{ listing.title }}" height="100">
             </a>
         </div>
     {% endfor %}
