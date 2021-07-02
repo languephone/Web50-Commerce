@@ -7,7 +7,9 @@
             {% if watchlist %}
             <span class="badge badge-primary">Watchlist</span>
             {% endif %}
-            {% if listing.active == False %}
+            {% if request.user == listing.winner %}
+            <span class="badge badge-success">Winner!</span>
+            {% elif not listing.active %}
             <span class="badge badge-warning">Auction Closed</span>
             {% endif %}
         </h2>
