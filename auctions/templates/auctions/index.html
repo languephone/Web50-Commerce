@@ -4,7 +4,12 @@
     <h2>Active Listings:</h2>
     {% for listing in listings %}
         <div class="listing">
-            <h4><a href="{{ listing.id }}">{{ listing.title }}</a>: £{{ listing.get_highest_bid.bid_amount__max }}</h4>
+            <h4>
+                <a href="{{ listing.id }}">{{ listing.title }}</a>: £{{ listing.get_highest_bid.bid_amount__max|floatformat:2 }}
+                {% if listing.active == False %}
+                    <span class="badge badge-warning">Auction Closed</span>
+                {% endif %}
+            </h4>
             <p>{{ listing.description }}</p>
             <p>Created: {{ listing.creation_date }}<p>
             <p>Listed by: {{ listing.seller.username }}</p>
