@@ -198,3 +198,12 @@ def close_auction(request, listing_id):
 
     # Below code runs when method is "GET"
     return HttpResponse("This page is not accessible.")
+
+
+@login_required(login_url='/login')
+def my_listings(request):
+    user = request.user
+    listings = user.seller_listings.all()
+    return render(request, "auctions/index.html", {
+        "listings": listings
+    })
