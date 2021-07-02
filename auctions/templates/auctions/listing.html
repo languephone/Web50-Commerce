@@ -17,14 +17,14 @@
         <hr>
         <p><img src="{{ listing.image }}" alt="A picture of {{ listing.title }}" height="150"></p>
         <h3>Top Bid: £{{ top_bid.bid_amount__max|floatformat:2 }}</h3>
-        <p>Listed by: {{ listing.seller }}</p>
-        <p>Listed on: {{ listing.creation_date }}</p>
-        <p>Category: <a href="{% url 'category' listing.category %}">{{ listing.category }}</a></p>
+        <p><strong>Listed by</strong>: {{ listing.seller }}</p>
+        <p><strong>Listed on</strong>: {{ listing.creation_date }}</p>
+        <p><strong>Category</strong>: <a href="{% url 'category' listing.category %}">{{ listing.category }}</a></p>
         <p><a href="/">back to main page</a></p>
         <hr>
         <h4>Comments:</h4>
         {% for comment in listing.listing_comments.all %}
-            <p>{{ comment.comment }} ({{ comment.user }}: {{ comment.date_added }})</p>
+            <p>{{ comment.comment }} <span class="lighter">({{ comment.user }}: {{ comment.date_added }})</span></p>
         {% endfor %}
         
         <hr>

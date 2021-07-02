@@ -10,9 +10,9 @@
                     <span class="badge badge-warning">Auction Closed</span>
                 {% endif %}
             </h4>
-            <p>{{ listing.description }}</p>
-            <p>Created: {{ listing.creation_date }}<p>
-            <p>Listed by: {{ listing.seller.username }}</p>
+            <p><h5>{{ listing.description }}</h5></p>
+            <p><strong>Created</strong>: {{ listing.creation_date }}<p>
+            <p><strong>Listed by</strong>: {{ listing.seller.username }}</p>
             <a href="{{ listing.id }}">
                 <img src="{{ listing.image }}" alt="A picture of {{ listing.title }}" height="100">
             </a>
