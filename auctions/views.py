@@ -113,13 +113,11 @@ def listing(request, listing_id):
         watchlist = True
     else:
         watchlist = False
-    # Check whether listing is from current user, to allow for ending of auction
-    can_end = listing.seller == request.user
     bid_form = NewBidForm()
     comment_form = NewCommentForm()
     return render(request, "auctions/listing.html", {
         "listing": listing, "top_bid": top_bid, "watchlist": watchlist,
-        "can_end": can_end, "bid_form": bid_form, "comment_form": comment_form
+        "bid_form": bid_form, "comment_form": comment_form
     })
 
 

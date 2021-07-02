@@ -48,7 +48,7 @@
                 {% endif %} 
             </button>
         </form>
-        {% if can_end %}
+        {% if listing.seller == request.user and listing.active %}
             <form action="{% url 'close_auction' listing.id %}" method="post">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-primary">Close Auction</button>
