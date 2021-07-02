@@ -30,7 +30,11 @@ class Listing(models.Model):
     def get_highest_bid(self):
         """Return current highest bid for listing by referencing Bid table."""
         
-        top_bid = self.bid_history.all().aggregate(models.Max('bid_amount'))
+        if self.bid_history.exists():
+            top_bid = self.bid_history.all().aggregate(
+                models.Max('bid_amount'))['bid_amount__max']
+        else:
+            top_bid = self.starting_bid
         return top_bid
 
     def get_highest_bidder(self):

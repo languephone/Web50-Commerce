@@ -16,7 +16,7 @@
         <p>{{ listing.description }}</p>
         <hr>
         <p><img src="{{ listing.image }}" alt="A picture of {{ listing.title }}" height="150"></p>
-        <h3>Top Bid: £{{ top_bid.bid_amount__max|floatformat:2 }}</h3>
+        <h3>Top Bid: £{{ top_bid | floatformat:2 }}</h3>
         <p><strong>Listed by</strong>: {{ listing.seller }}</p>
         <p><strong>Listed on</strong>: {{ listing.creation_date }}</p>
         <p><strong>Category</strong>: <a href="{% url 'category' listing.category %}">{{ listing.category }}</a></p>

@@ -92,9 +92,6 @@ def new_listing(request):
         new_listing = listing.save(commit=False)
         new_listing.seller = request.user
         new_listing.save()
-        # Create initial bid for listing, equal to starting price
-        bid = Bid(listing=new_listing, bidder=request.user, bid_amount=new_listing.starting_bid)
-        bid.save()
         return HttpResponseRedirect(reverse("index"))
 
     # Below code runs when method is "GET"
@@ -125,18 +122,31 @@ def listing(request, listing_id):
 def bid(request, listing_id):
     if request.method == "GET":
         return HttpResponse("Error: Please bid via the form.")
-    # Create bid object but don't commit, then check if it's higher than the existing high bid.
+    
+    # Create bid object from form data, but don't commit
     bid = NewBidForm(request.POST)
     new_bid = bid.save(commit=False)
     new_bid.bidder = request.user
     new_bid.listing = Listing.objects.get(pk=int(listing_id))
-    current_high_bid = new_bid.listing.get_highest_bid()['bid_amount__max']
-    if new_bid.bid_amount <= current_high_bid:
-        return HttpResponse("Error: Your bid must be higher than the existing bid.")
+    current_price = new_bid.listing.get_highest_bid()
+    
+    # Prevent seller from bidding
+    if new_bid.bidder == new_bid.listing.seller:
+        return HttpResponse("Error: You can't bid on your own listing")
+    
+    # Where no bids exist, new bid must only be >= starting price
+    if new_bid.listing.bid_history.exists():
+        if new_bid.bid_amount <= current_price:
+            return HttpResponse("Error: Your bid must be higher than the existing bid.")
+    # Where no bids exist, new bid must only be >= starting price
     else:
-        new_bid.save()
-        return HttpResponseRedirect(reverse("index"))
-
+        if new_bid.bid_amount < current_price:
+            return HttpResponse("Error: Your bid must at least match the starting price.")
+    
+    # Save new bid if neither conditional met
+    new_bid.save()
+    return HttpResponseRedirect(reverse("index"))
+    
 
 def categories(request):
     return render(request, "auctions/categories.html", {
