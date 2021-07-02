@@ -2,6 +2,7 @@
 
 {% block body %}
     <h2>Active Listings:</h2>
+    <div class="grid">
     {% for listing in listings %}
         <div class="listing">
             <h4>
@@ -18,4 +19,5 @@
             </a>
         </div>
     {% endfor %}
+    </div>
 {% endblock %}
