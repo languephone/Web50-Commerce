@@ -46,6 +46,14 @@ class Listing(models.Model):
         high_bidder = high_bid.bidder
         return high_bidder
 
+    def get_bid_count(self):
+        """Return number of bids on current listing."""
+
+        if self.bid_history.exists():
+            bids = len(self.bid_history.all())
+        else:
+            bids = 0
+        return bids
 
     def toggle_watchlist(self, user):
         """Add an item to a watchlist, or remove it if it's already there."""

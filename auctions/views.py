@@ -137,7 +137,7 @@ def bid(request, listing_id):
     if new_bid.bidder == new_bid.listing.seller:
         return HttpResponse("Error: You can't bid on your own listing")
     
-    # Where no bids exist, new bid must only be >= starting price
+    # If bids already exist, new bid must be > existing bids
     if new_bid.listing.bid_history.exists():
         if new_bid.bid_amount <= current_price:
             return HttpResponse("Error: Your bid must be higher than the existing bid.")
@@ -148,7 +148,7 @@ def bid(request, listing_id):
     
     # Save new bid if neither conditional met
     new_bid.save()
-    return HttpResponseRedirect(reverse("index"))
+    return HttpResponseRedirect(reverse("listing", args=(listing_id,)))
     
 
 def categories(request):

@@ -20,6 +20,12 @@
         <hr>
         <p><img src="{{ listing.image }}" alt="A picture of {{ listing.title }}" height="150"></p>
         <h3>Top Bid: £{{ top_bid | floatformat:2 }}</h3>
+        <p>
+            Current bid count: {{ listing.get_bid_count }}
+            {% if listing.get_highest_bidder == request.user %}
+                (You are the current high bidder)
+            {% endif %}
+        </p>
         
         <!-- Bidding Form -->
         <form action="{% url 'bid' listing.id %}" method="post">
