@@ -35,8 +35,8 @@ class Listing(models.Model):
     def get_highest_bidder(self):
         """Return bid object for highest bid by referencing Bid table."""
 
-        # Queries the most recent bid, therefore requires logic in the bidding
-        # route which only allows bids greater than the existing top bid 
+        """Queries the most recent bid, relying on logic in the bidding route
+        which only allows bids greater than the existing top bid."""
         high_bid = self.bid_history.all().order_by('bid_amount').reverse()[0]
         high_bidder = high_bid.bidder
         return high_bidder
