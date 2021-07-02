@@ -4,6 +4,8 @@
     <div class="listing">    
         <h2>
             {{ listing.title }}
+            
+            <h4>
             {% if watchlist %}
             <span class="badge badge-primary">Watchlist</span>
             {% endif %}
@@ -12,37 +14,29 @@
             {% elif not listing.active %}
             <span class="badge badge-warning">Auction Closed</span>
             {% endif %}
+            </h4>
         </h2>
         <p>{{ listing.description }}</p>
         <hr>
         <p><img src="{{ listing.image }}" alt="A picture of {{ listing.title }}" height="150"></p>
         <h3>Top Bid: £{{ top_bid | floatformat:2 }}</h3>
+        
+        <!-- Bidding Form -->
+        <form action="{% url 'bid' listing.id %}" method="post">
+            {% csrf_token %}
+            {{ bid_form }}
+            <input type="submit" class="btn btn-primary">
+        </form>
         <p><strong>Listed by</strong>: {{ listing.seller }}</p>
         <p><strong>Listed on</strong>: {{ listing.creation_date }}</p>
         <p><strong>Category</strong>: <a href="{% url 'category' listing.category %}">{{ listing.category }}</a></p>
         <p><a href="/">back to main page</a></p>
-        <hr>
-        <h4>Comments:</h4>
-        {% for comment in listing.listing_comments.all %}
-            <p>{{ comment.comment }} <span class="lighter">({{ comment.user }}: {{ comment.date_added }})</span></p>
-        {% endfor %}
-        
-        <hr>
-       <!-- Below are the forms for bidding, commenting and adding to a watchlist -->
-        <form action="{% url 'bid' listing.id %}" method="post">
-            {% csrf_token %}
-            {{ bid_form }}
-        	<input type="submit" class="btn btn-primary">
-        </form>
-        <form action ="{% url 'comment' listing.id %}" method="post">
-            {% csrf_token %}
-            {{ comment_form }}
-            <input type="submit" class="btn btn-primary">
-        </form>
+
+       <!-- Add to Watchlist Button -->
         <form action="{% url 'watchlist' %}" method="post">
             {% csrf_token %}
             <input type="hidden" value="{{ listing.id }}" name="listing_id">
-            <button type="submit" class="btn btn-primary">
+            <button type="submit" class="btn btn-secondary">
                 {% if watchlist %}
                     Remove from Watchlist
                 {% else %}
@@ -50,6 +44,21 @@
                 {% endif %} 
             </button>
         </form>
+        <hr>
+        <h4>Comments:</h4>
+        {% for comment in listing.listing_comments.all %}
+            <p>{{ comment.comment }} <span class="lighter">({{ comment.user }}: {{ comment.date_added }})</span></p>
+        {% endfor %}
+        
+        <hr>
+       
+       <!-- Comment Form -->
+        <form action ="{% url 'comment' listing.id %}" method="post">
+            {% csrf_token %}
+            {{ comment_form }}
+            <input type="submit" class="btn btn-primary">
+        </form>
+
         {% if listing.seller == request.user and listing.active %}
             <form action="{% url 'close_auction' listing.id %}" method="post">
                 {% csrf_token %}
