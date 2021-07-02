@@ -29,6 +29,7 @@ class Listing(models.Model):
 
     def get_highest_bid(self):
         """Return current highest bid for listing by referencing Bid table."""
+        
         top_bid = self.bid_history.all().aggregate(models.Max('bid_amount'))
         return top_bid
 
@@ -69,7 +70,7 @@ class Bid(models.Model):
     date_time = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"Bid: £{self.bid_amount} {self.bidder.username}"
+        return f"Bid: {self.listing.title} £{self.bid_amount}"
 
 
 class Comment(models.Model):
@@ -77,6 +78,9 @@ class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_comments")
     comment = models.TextField(max_length=1000)
     date_added = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Comment: {self.listing.title}: {self.comment[:15]}..."
 
 
 class Watchlist(models.Model):
