@@ -2,9 +2,11 @@
 
 {% block body %}
     <h2>Categories:</h2>
+    <div class="grid">
     {% for category in categories %}
         <div class="listing">
             <h4><a href="{{ category.0 }}">{{ category.0 }}</a></h4>
         </div>
     {% endfor %}
+    </div>
 {% endblock %}
