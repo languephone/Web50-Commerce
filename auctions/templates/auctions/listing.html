@@ -49,7 +49,16 @@
                     Add to Watchlist
                 {% endif %} 
             </button>
+       
+        <!-- Close Auction Button -->
         </form>
+        {% if listing.seller == request.user and listing.active %}
+            <form action="{% url 'close_auction' listing.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-warning">Close Auction</button>
+            </form>
+        {% endif %} 
+
         <hr>
         <h4>Comments:</h4>
         {% for comment in listing.listing_comments.all %}
@@ -64,12 +73,5 @@
             {{ comment_form }}
             <input type="submit" class="btn btn-primary">
         </form>
-
-        {% if listing.seller == request.user and listing.active %}
-            <form action="{% url 'close_auction' listing.id %}" method="post">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-primary">Close Auction</button>
-            </form>
-        {% endif %} 
     </div>
 {% endblock %}
