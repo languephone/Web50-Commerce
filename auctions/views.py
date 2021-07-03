@@ -136,6 +136,9 @@ def bid(request, listing_id):
     # Prevent seller from bidding
     if new_bid.bidder == new_bid.listing.seller:
         return HttpResponse("Error: You can't bid on your own listing")
+    # Prevent bidding on a closed auction
+    if new_bid.listing.active == False:
+        return HttpResponse("This auction is already closed")
     
     # If bids already exist, new bid must be > existing bids
     if new_bid.listing.bid_history.exists():
